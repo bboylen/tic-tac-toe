@@ -32,7 +32,15 @@ const Player = (sign) => {
 const gameController = (() => {
   const player1 = Player("X");
   const player2 = Player("O");
+
+  // start game
+
+  // turn 
+
+  // check victory
 })();
+
+
 
 // const displayController = (() => {
 
