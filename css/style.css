@@ -1,3 +1,11 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   box-sizing: border-box;
   background-color: #4682B4;
@@ -25,7 +33,16 @@ body {
 }
 
 .board div {
-  height: 130px;
+  height: 150px;
   border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 81px;
+  font-weight: 900;
   cursor: pointer;
+}
+
+.board div:hover {
+  background-color: #376891;
 }
