@@ -10,14 +10,19 @@ const gameBoard = (() => {
 
   const initialize = () => {
     for (i = 0; i < 9; i++) {
-      const newSquare = square;
+      const newSquare = square();
       board.push(newSquare);
     }
   };
 
+  const modifyBoard = (symbol, squareId) => {
+    board[squareId].symbol = symbol;
+  }
+
   return {
     getBoard,
     initialize,
+    modifyBoard
   };
 })();
 
@@ -34,48 +39,63 @@ const gameController = (() => {
 
   const switchTurn = () => {
     player1Turn = !player1Turn;
-  }
+  };
 
   const playMessage = () => {
     let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
     console.log(`It is ${player} turn:`);
     // message.innerHTML = message
-  }
+  };
 
   // start game
 
   const playTurn = () => {
     // check victory ?
     // add event listeners (only ones not clicked yet) ?
-    // on click find object of click 
+    // on click find object of click
     // add mark to square
     // switch whose turn
     // play turn again?
-  }
+  };
 
   const updateSquare = (e) => {
-    squareId = e.target.dataset.id;
-    console.log(squareId);
-  }
+    let square = e.target;
+    let squareId = Number(square.dataset.id);
+    let symbol = "";
+
+    if (player1Turn) {
+      symbol = "X";
+    } else {
+      symbol = "O";
+    }; 
+
+    displayController.setText(symbol, square);
+    gameBoard.modifyBoard(symbol, squareId);
+  };
 
   // check victory
   return {
-    updateSquare
-  }
+    updateSquare,
+  };
 })();
-
 
 const displayController = (() => {
   getSquares = () => document.getElementsByClassName("board")[0].children;
 
-  setListeners = (elementList, targetFunction) => {
+  const setListeners = (elementList, targetFunction) => {
     for (element of elementList) {
+      // if doesnt contain text content or if data-clicked = yes
       element.addEventListener("click", targetFunction);
     }
+  };
+
+  const setText = (symbol, square) => {
+    square.textContent = symbol;
   }
 
   return {
     getSquares,
-    setListeners
-  }
+    setListeners,
+    setText
+  };
 })();
