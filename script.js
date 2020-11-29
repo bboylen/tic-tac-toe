@@ -43,15 +43,19 @@ const gameController = (() => {
 
   const playMessage = () => {
     let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
-    console.log(`It is ${player} turn:`);
-    // message.innerHTML = message
+    document.getElementsByClassName("message-block")[0].textContent = `It is ${player} turn:`;
   };
 
   // start game
+  
 
   const playTurn = () => {
     // check victory ?
+
+    playMessage();
+
     // add event listeners (only ones not clicked yet) ?
+    displayController.setListeners(getSquares(), updateSquare);
     // on click find object of click
     // add mark to square
     // switch whose turn
@@ -73,9 +77,16 @@ const gameController = (() => {
     gameBoard.modifyBoard(symbol, squareId);
   };
 
+  const startGame = (() => {
+    gameBoard.initialize();
+    playTurn();
+  });
+
   // check victory
   return {
     updateSquare,
+    playTurn,
+    startGame
   };
 })();
 
@@ -99,3 +110,5 @@ const displayController = (() => {
     setText
   };
 })();
+
+gameController.startGame();
