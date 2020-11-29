@@ -9,12 +9,9 @@ const gameBoard = (() => {
   const getBoard = () => board;
 
   const initialize = () => {
-    for (i = 0; i < 3; i++) {
-      board.push([]);
-      for (j = 0; j < 3; j++) {
-        const newSquare = square;
-        board[i].push(newSquare);
-      }
+    for (i = 0; i < 9; i++) {
+      const newSquare = square;
+      board.push(newSquare);
     }
   };
 
@@ -56,10 +53,29 @@ const gameController = (() => {
     // play turn again?
   }
 
+  const updateSquare = (e) => {
+    squareId = e.target.dataset.id;
+    console.log(squareId);
+  }
+
   // check victory
+  return {
+    updateSquare
+  }
 })();
 
 
 const displayController = (() => {
+  getSquares = () => document.getElementsByClassName("board")[0].children;
 
+  setListeners = (elementList, targetFunction) => {
+    for (element of elementList) {
+      element.addEventListener("click", targetFunction);
+    }
+  }
+
+  return {
+    getSquares,
+    setListeners
+  }
 })();
