@@ -31,11 +31,39 @@ const Player = (sign) => {
   return { getSign };
 };
 
+const displayController = (() => {
+  getSquares = () => document.getElementsByClassName("board")[0].children;
+
+  const setListeners = (elementList, targetFunction) => {
+    for (element of elementList) {
+      if (element.innerHTML !== "X" && element.innerHTML != "O") {
+        element.addEventListener("click", targetFunction);
+      }
+    }
+  };
+
+  const removeListener = (element, targetFunction) => {
+    element.removeEventListener("click", targetFunction);
+  }
+
+  const setText = (symbol, square) => {
+    square.textContent = symbol;
+  }
+
+  return {
+    getSquares,
+    setListeners,
+    setText,
+    removeListener
+  };
+})();
+
 const gameController = (() => {
   const player1 = Player("X");
   const player2 = Player("O");
 
   let player1Turn = true;
+  let waitingForClick = true;
 
   const switchTurn = () => {
     player1Turn = !player1Turn;
@@ -45,21 +73,11 @@ const gameController = (() => {
     let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
     document.getElementsByClassName("message-block")[0].textContent = `It is ${player} turn:`;
   };
-
-  // start game
   
-
-  const playTurn = () => {
+  const setUpRound = () => {
     // check victory ?
 
     playMessage();
-
-    // add event listeners (only ones not clicked yet) ?
-    displayController.setListeners(getSquares(), updateSquare);
-    // on click find object of click
-    // add mark to square
-    // switch whose turn
-    // play turn again?
   };
 
   const updateSquare = (e) => {
@@ -75,40 +93,17 @@ const gameController = (() => {
 
     displayController.setText(symbol, square);
     gameBoard.modifyBoard(symbol, squareId);
+    displayController.removeListener(square, updateSquare);
+    switchTurn();
+    playMessage();
   };
 
   const startGame = (() => {
     gameBoard.initialize();
-    playTurn();
-  });
-
-  // check victory
-  return {
-    updateSquare,
-    playTurn,
-    startGame
-  };
-})();
-
-const displayController = (() => {
-  getSquares = () => document.getElementsByClassName("board")[0].children;
-
-  const setListeners = (elementList, targetFunction) => {
-    for (element of elementList) {
-      // if doesnt contain text content or if data-clicked = yes
-      element.addEventListener("click", targetFunction);
-    }
-  };
-
-  const setText = (symbol, square) => {
-    square.textContent = symbol;
-  }
+    displayController.setListeners(getSquares(), updateSquare);
+    playMessage();
+  })();
 
   return {
-    getSquares,
-    setListeners,
-    setText
   };
 })();
-
-gameController.startGame();
