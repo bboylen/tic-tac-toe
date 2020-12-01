@@ -70,6 +70,11 @@ const displayController = (() => {
     )[0].textContent = "It's a tie!";
   }
 
+  const showButton = () => {
+    document.getElementById(
+      "play-again-button"
+    ).style.display = "inline-block";
+  }
   return {
     getSquares,
     setListeners,
@@ -77,7 +82,8 @@ const displayController = (() => {
     removeListener,
     playMessage,
     gameOverMessage,
-    tieMessage
+    tieMessage,
+    showButton
   };
 })();
 
@@ -145,6 +151,7 @@ const gameController = (() => {
 
   const endGame = () => {
     displayController.gameOverMessage(player1Turn);
+    displayController.showButton();
   }
 
   const startGame = (() => {
@@ -154,6 +161,5 @@ const gameController = (() => {
   })();
 
   return {
-    checkVictory,
   };
 })();

@@ -20,11 +20,33 @@ body {
   font-family: 'Tomorrow', sans-serif;
 }
 
+/* messages */ 
+
 .message-block {
   text-align: center;
   margin-top: 30px;
   font-size: 30px;
   font-family: 'Tomorrow', sans-serif;
+}
+
+.play-again {
+  text-align: center;
+}
+
+.play-again button {
+  font-size: 28px;
+  padding: 5px 20px;
+  margin-top: 40px;
+  border-radius: 9px;
+  border: 1px solid black;
+  font-family: 'Tomorrow', sans-serif;
+  color: black;
+  background-color: #ff8c69;
+  display: none;
+}
+
+.play-again button:hover {
+  background-color: #e37959;
 }
 /* board */
 
