@@ -17,12 +17,12 @@ const gameBoard = (() => {
 
   const modifyBoard = (symbol, squareId) => {
     board[squareId].symbol = symbol;
-  }
+  };
 
   return {
     getBoard,
     initialize,
-    modifyBoard
+    modifyBoard,
   };
 })();
 
@@ -44,17 +44,17 @@ const displayController = (() => {
 
   const removeListener = (element, targetFunction) => {
     element.removeEventListener("click", targetFunction);
-  }
+  };
 
   const setText = (symbol, square) => {
     square.textContent = symbol;
-  }
+  };
 
   return {
     getSquares,
     setListeners,
     setText,
-    removeListener
+    removeListener,
   };
 })();
 
@@ -71,9 +71,11 @@ const gameController = (() => {
 
   const playMessage = () => {
     let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
-    document.getElementsByClassName("message-block")[0].textContent = `It is ${player} turn:`;
+    document.getElementsByClassName(
+      "message-block"
+    )[0].textContent = `It is ${player} turn:`;
   };
-  
+
   const setUpRound = () => {
     // check victory ?
 
@@ -89,13 +91,40 @@ const gameController = (() => {
       symbol = "X";
     } else {
       symbol = "O";
-    }; 
+    }
 
     displayController.setText(symbol, square);
     gameBoard.modifyBoard(symbol, squareId);
     displayController.removeListener(square, updateSquare);
     switchTurn();
     playMessage();
+  };
+
+  const checkVictory = () => {
+    board = gameBoard.getBoard();
+    checkBoard = [
+      [board[0], board[1], board[2]],
+      [board[3], board[4], board[5]],
+      [board[6], board[7], board[8]],
+      [board[0], board[3], board[6]],
+      [board[1], board[4], board[7]],
+      [board[2], board[5], board[8]],
+      [board[2], board[4], board[6]],
+      [board[0], board[4], board[8]],
+    ];
+    let win = checkBoard.some(function (array) {
+      if (
+        array.every(function (square) {
+          return square.symbol === "X" ? true : false;
+        }) ||
+        array.every(function (square) {
+          return square.symbol === "O" ? true : false;
+        })
+      ) {
+        return true;
+      }
+    });
+    console.log(win);
   };
 
   const startGame = (() => {
@@ -105,5 +134,6 @@ const gameController = (() => {
   })();
 
   return {
+    checkVictory,
   };
 })();
