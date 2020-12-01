@@ -50,11 +50,34 @@ const displayController = (() => {
     square.textContent = symbol;
   };
 
+  const playMessage = (player1Turn) => {
+    let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
+    document.getElementsByClassName(
+      "message-block"
+    )[0].textContent = `It is ${player} turn:`;
+  };
+
+  const gameOverMessage = (player1Turn) => {
+    let player = player1Turn ? "Player 1" : "Player 2";
+    document.getElementsByClassName(
+      "message-block"
+    )[0].textContent = `${player} wins!`;
+  }
+
+  const tieMessage = () => {
+    document.getElementsByClassName(
+      "message-block"
+    )[0].textContent = "It's a tie!";
+  }
+
   return {
     getSquares,
     setListeners,
     setText,
     removeListener,
+    playMessage,
+    gameOverMessage,
+    tieMessage
   };
 })();
 
@@ -67,19 +90,6 @@ const gameController = (() => {
 
   const switchTurn = () => {
     player1Turn = !player1Turn;
-  };
-
-  const playMessage = () => {
-    let player = player1Turn ? "Player 1's (X)" : "Player 2's (O)";
-    document.getElementsByClassName(
-      "message-block"
-    )[0].textContent = `It is ${player} turn:`;
-  };
-
-  const setUpRound = () => {
-    // check victory ?
-
-    playMessage();
   };
 
   const updateSquare = (e) => {
@@ -95,9 +105,15 @@ const gameController = (() => {
 
     displayController.setText(symbol, square);
     gameBoard.modifyBoard(symbol, squareId);
+
+    if (checkVictory()) {
+      return endGame();
+    }
+    // check tie 
+
     displayController.removeListener(square, updateSquare);
     switchTurn();
-    playMessage();
+    displayController.playMessage(player1Turn);
   };
 
   const checkVictory = () => {
@@ -112,7 +128,8 @@ const gameController = (() => {
       [board[2], board[4], board[6]],
       [board[0], board[4], board[8]],
     ];
-    let win = checkBoard.some(function (array) {
+
+    return checkBoard.some(function (array) {
       if (
         array.every(function (square) {
           return square.symbol === "X" ? true : false;
@@ -124,13 +141,16 @@ const gameController = (() => {
         return true;
       }
     });
-    console.log(win);
   };
+
+  const endGame = () => {
+    displayController.gameOverMessage(player1Turn);
+  }
 
   const startGame = (() => {
     gameBoard.initialize();
     displayController.setListeners(getSquares(), updateSquare);
-    playMessage();
+    displayController.playMessage(player1Turn);
   })();
 
   return {
