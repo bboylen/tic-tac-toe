@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-  const square = () => {
+  let square = () => {
     symbol = "";
     return { symbol };
   };
@@ -19,10 +19,14 @@ const gameBoard = (() => {
     board[squareId].symbol = symbol;
   };
 
+  const removeSymbolValues = () => {
+    board=[];
+  }
   return {
     getBoard,
     initialize,
     modifyBoard,
+    removeSymbolValues
   };
 })();
 
@@ -34,12 +38,18 @@ const Player = (sign) => {
 const displayController = (() => {
   getSquares = () => document.getElementsByClassName("board")[0].children;
 
-  const setListeners = (elementList, targetFunction) => {
+  const setSquareListeners = (elementList, targetFunction) => {
     for (element of elementList) {
       if (element.innerHTML !== "X" && element.innerHTML != "O") {
         element.addEventListener("click", targetFunction);
       }
     }
+  };
+
+  const setButtonListener = (targetFunction) => {
+    btn = document
+      .getElementById("play-again-button")
+      .addEventListener("click", targetFunction);
   };
 
   const removeListener = (element, targetFunction) => {
@@ -62,28 +72,39 @@ const displayController = (() => {
     document.getElementsByClassName(
       "message-block"
     )[0].textContent = `${player} wins!`;
-  }
+  };
 
   const tieMessage = () => {
-    document.getElementsByClassName(
-      "message-block"
-    )[0].textContent = "It's a tie!";
-  }
+    document.getElementsByClassName("message-block")[0].textContent =
+      "It's a tie!";
+  };
 
   const showButton = () => {
-    document.getElementById(
-      "play-again-button"
-    ).style.display = "inline-block";
+    document.getElementById("play-again-button").style.display = "inline-block";
+  };
+
+  const hideButton = () => {
+    document.getElementById("play-again-button").style.display = "none";
   }
+  const removeBoardText = () => {
+    squares = getSquares();
+    for (square of squares) {
+      setText("",square);
+    }
+  }
+
   return {
     getSquares,
-    setListeners,
+    setSquareListeners,
+    setButtonListener,
     setText,
     removeListener,
     playMessage,
     gameOverMessage,
     tieMessage,
-    showButton
+    showButton,
+    hideButton,
+    removeBoardText
   };
 })();
 
@@ -92,7 +113,6 @@ const gameController = (() => {
   const player2 = Player("O");
 
   let player1Turn = true;
-  let waitingForClick = true;
 
   const switchTurn = () => {
     player1Turn = !player1Turn;
@@ -113,9 +133,14 @@ const gameController = (() => {
     gameBoard.modifyBoard(symbol, squareId);
 
     if (checkVictory()) {
+      displayController.gameOverMessage(player1Turn);
       return endGame();
     }
-    // check tie 
+    
+    if (checkTie()) {
+      displayController.tieMessage();
+      return endGame();
+    }
 
     displayController.removeListener(square, updateSquare);
     switchTurn();
@@ -149,17 +174,31 @@ const gameController = (() => {
     });
   };
 
+  const checkTie = () => {
+    board = gameBoard.getBoard();
+    return board.every(function (square) {
+      return square.symbol !== "";
+    })
+  }
+
   const endGame = () => {
-    displayController.gameOverMessage(player1Turn);
     displayController.showButton();
+  };
+
+  const resetGame = () => {
+    displayController.removeBoardText();
+    gameBoard.removeSymbolValues();
+    displayController.hideButton();
+    startGame();
   }
 
   const startGame = (() => {
     gameBoard.initialize();
-    displayController.setListeners(getSquares(), updateSquare);
+    displayController.setSquareListeners(getSquares(), updateSquare);
+    displayController.setButtonListener(resetGame);
+    player1Turn = true;
     displayController.playMessage(player1Turn);
-  })();
+  });
 
-  return {
-  };
+  startGame();
 })();
